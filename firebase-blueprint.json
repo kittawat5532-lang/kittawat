@@ -1,0 +1,158 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile document storing basic account metadata and role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 120 },
+        "photoURL": { "type": "string", "maxLength": 1024 },
+        "role": { "type": "string", "enum": ["member", "moderator", "admin"] },
+        "status": { "type": "string", "enum": ["active", "suspended"] },
+        "bio": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "status"]
+    },
+    "Resource": {
+      "title": "Resource",
+      "description": "Educational resource item shared by members",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200, "minLength": 2 },
+        "description": { "type": "string", "maxLength": 4000 },
+        "category": { "type": "string", "maxLength": 100 },
+        "gradeLevel": { "type": "string", "maxLength": 50 },
+        "mediaType": { "type": "string", "enum": ["pdf", "video", "website", "article", "slides", "other"] },
+        "url": { "type": "string", "maxLength": 2048 },
+        "fileUrl": { "type": "string", "maxLength": 2048 },
+        "fileName": { "type": "string", "maxLength": 256 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "authorName": { "type": "string", "maxLength": 120 },
+        "authorEmail": { "type": "string", "maxLength": 256 },
+        "isHidden": { "type": "boolean" },
+        "viewCount": { "type": "number" },
+        "favoriteCount": { "type": "number" },
+        "reportCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "category", "gradeLevel", "mediaType", "authorId", "authorName", "isHidden"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "User bookmarked resource",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "resourceId": { "type": "string", "maxLength": 128 },
+        "resourceTitle": { "type": "string", "maxLength": 200 },
+        "resourceCategory": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "resourceId", "resourceTitle"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "User report for inappropriate or broken resource",
+      "type": "object",
+      "properties": {
+        "resourceId": { "type": "string", "maxLength": 128 },
+        "resourceTitle": { "type": "string", "maxLength": 200 },
+        "reporterId": { "type": "string", "maxLength": 128 },
+        "reporterEmail": { "type": "string", "maxLength": 256 },
+        "reason": { "type": "string", "maxLength": 100 },
+        "details": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["pending", "resolved", "dismissed"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "resolvedAt": { "type": "string", "format": "date-time" },
+        "resolvedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["resourceId", "reporterId", "reason", "status"]
+    },
+    "ModerationLog": {
+      "title": "ModerationLog",
+      "description": "Audit trail of admin and moderator actions",
+      "type": "object",
+      "properties": {
+        "action": { "type": "string", "maxLength": 100 },
+        "targetType": { "type": "string", "maxLength": 50 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "targetTitle": { "type": "string", "maxLength": 200 },
+        "performedBy": { "type": "string", "maxLength": 128 },
+        "performedByName": { "type": "string", "maxLength": 120 },
+        "reason": { "type": "string", "maxLength": 500 },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["action", "targetType", "targetId", "performedBy"]
+    },
+    "SettingGeneral": {
+      "title": "SettingGeneral",
+      "description": "Global website settings and announcements",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "announcement": { "type": "string", "maxLength": 1000 },
+        "bannerText": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["siteName"]
+    },
+    "SettingCategories": {
+      "title": "SettingCategories",
+      "description": "Custom knowledge categories manageable from admin",
+      "type": "object",
+      "properties": {
+        "list": { "type": "array" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["list"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Designated system administrator record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 256 },
+        "grantedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles with role and status information"
+    },
+    "/resources/{resourceId}": {
+      "schema": "Resource",
+      "description": "Shared educational materials and links"
+    },
+    "/favorites/{favoriteId}": {
+      "schema": "Favorite",
+      "description": "Saved user bookmarks mapping user to resource"
+    },
+    "/reports/{reportId}": {
+      "schema": "Report",
+      "description": "Reports submitted by users against resources"
+    },
+    "/moderationLogs/{logId}": {
+      "schema": "ModerationLog",
+      "description": "Log of admin actions for transparency and security"
+    },
+    "/settings/{settingId}": {
+      "schema": "SettingGeneral",
+      "description": "Site-wide configuration and category list"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Fast access list of admin user IDs"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "EduShare Thai - คลังปัญญาและสื่อการเรียนรู้แบ่งปัน",
+  "description": "แพลตฟอร์มรวบรวมและแบ่งปันสื่อการเรียนรู้ แหล่งค้นคว้า และคลังความรู้สำหรับนักเรียน นักศึกษา และคุณครู",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
